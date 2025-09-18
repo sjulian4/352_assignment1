@@ -35,6 +35,12 @@ class TileProblem:
 
         # add legal actions based on blank position (r, c) and board size
 
+
+
+
+
+
+
         ################################
 
 
@@ -49,6 +55,8 @@ class TileProblem:
         ############ write your code between these blocks
 
         # compute new blank position (nr, nc), assert it's in-bounds, and swap
+
+        
 
         ################################
 
