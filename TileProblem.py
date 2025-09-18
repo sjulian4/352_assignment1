@@ -34,12 +34,14 @@ class TileProblem:
         ############ write your code between these blocks
 
         # add legal actions based on blank position (r, c) and board size
-
-
-
-
-
-
+        if r>0:
+            moves.append('U')
+        if r < self.size-1:
+            moves.append('D')
+        if c>0:
+            moves.append('L')
+        if c < self.size-1:
+            moves.append('R') 
 
         ################################
 
@@ -56,7 +58,7 @@ class TileProblem:
 
         # compute new blank position (nr, nc), assert it's in-bounds, and swap
 
-        
+
 
         ################################
 

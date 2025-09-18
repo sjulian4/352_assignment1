@@ -1,10 +1,11 @@
 import sys
 from TileProblem import TileProblem
-from 
+ 
 
 
 
 def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
+    print("A:", A )
 
 
 
