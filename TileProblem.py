@@ -75,7 +75,7 @@ class TileProblem:
 
         swapped_block = state[nr][nc]
         state[r][c] = swapped_block
-        state[nr][nc] = 0
+        state[nr][nc] = None
 
         ################################
 

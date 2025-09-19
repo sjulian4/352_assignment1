@@ -3,7 +3,7 @@ class Hueristics:
         distance = 0
         for i in range(len(state)):
             for j in range(len(state[i])):
-                if state[i][j] != 0: 
+                if state[i][j] != None: 
                     goal_row, goal_col = divmod(goal_state.index(state[i][j]), len(state))
                     distance += abs(i - goal_row) + abs(j - goal_col)
         return distance
@@ -11,6 +11,6 @@ class Hueristics:
         misplaced = 0
         for i in range(len(state)):
             for j in range(len(state[i])):
-                if state[i][j] != 0 and state[i][j] != goal_state[i][j]:  
+                if state[i][j] != None and state[i][j] != goal_state[i][j]:  
                     misplaced += 1
         return misplaced
