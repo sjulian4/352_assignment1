@@ -58,7 +58,24 @@ class TileProblem:
 
         # compute new blank position (nr, nc), assert it's in-bounds, and swap
 
+        if action == 'U':
+            nr = r-1
+            nc = c
+        elif action == 'D':
+            nr = r+1
+            nc =  c
+        elif action == 'L':
+            nr = r
+            nc = c-1
+        elif action == 'R':
+            nr = r 
+            nc = c+1
 
+        assert 0 <= nr < self.size and 0 <= nc < self.size, "This leads to an in-bounds blank position"
+
+        swapped_block = state[nr][nc]
+        state[r][c] = swapped_block
+        state[nr][nc] = 0
 
         ################################
 
