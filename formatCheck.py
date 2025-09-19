@@ -42,7 +42,7 @@ if __name__ == '__main__':
         exit(-1)
 
     output_file = sys.argv[1]
-    formatCheck(output_file)
+    success = formatCheck(output_file)
     if success:
         print('Success: format check passed')
     else:
