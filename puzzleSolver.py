@@ -1,27 +1,41 @@
 import sys
+from queue import PriorityQueue
 from TileProblem import TileProblem
+from Heuristics import manhattan_distance, misplaced_tiles
+import heapq
  
 
-def a_star(tile_problem):
-   
+def a_star(H, tile_problem):
+    explored = []
+    start = tile_problem.initial_state
+    print("Start State:" + str(start))
+    print("Goal State:" + str(tile_problem.goal_state))
+
    # Code from slides
-   frontier = priority_queue()
-   frontier = frontir + make-node(start)
-   while not frontier.is-empty():
-       current <- pop(frontier)
-       if goal-test(current) return success
-       for each action in current.actions():
-            new <- action(current.state)
-            new-node <- make-node(new,current,action)
-            frontier = frontier + new-node
-        
-
-
+    frontier = PriorityQueue()
+    frontier.put((0,start))
+    print("Frontier:" + str(frontier))
+    while not frontier.empty():
+        current = frontier.get()[1]
+        if tile_problem.goal_test(current):
+            return current
+        if current not in explored:
+            explored.append(current)
+            for action in tile_problem.actions(current):
+                print("Action:" + str(action))
+                new_node = tile_problem.result(current,action)
+                if int(H) == 1:
+                    heuristic = manhattan_distance(new_node, tile_problem.goal_state)
+                else:
+                    heuristic = misplaced_tiles(new_node, tile_problem.goal_state)
+                print("Heuristic:" + str(heuristic))
+                print("New Node:" + str(new_node))
+                frontier.put((heuristic,new_node))
    ###################
 
 
 
-def rbfs(tile_problem):
+# def rbfs(tile_problem):
 
 
 
@@ -40,10 +54,11 @@ def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
 
     tile_problem = TileProblem(initial_state)
     print(tile_problem.actions(initial_state))
-    if A == 1:
-        output = a_star(tile_problem)
-    else:
-        output = rbfs(tile_problem)
+    if int(A) == 1:
+        print("here")
+        output = a_star(H, tile_problem)
+    # else:
+    #     output = rbfs(tile_problem)
 
     #then write the output to the output file here
 

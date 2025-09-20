@@ -74,8 +74,10 @@ class TileProblem:
         assert 0 <= nr < self.size and 0 <= nc < self.size, "This leads to an in-bounds blank position"
 
         swapped_block = state[nr][nc]
-        state[r][c] = swapped_block
-        state[nr][nc] = None
+        new_state = [row[:] for row in state]  
+        new_state[r][c] = swapped_block
+        new_state[nr][nc] = None
+        return new_state
 
         ################################
 
