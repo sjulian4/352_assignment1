@@ -4,11 +4,8 @@ def manhattan_distance(state, goal_state):
     for i in range(len(state)):
         for j in range(len(state[i])):
             if state[i][j] != None: 
-                print("state:" + str(state[i][j]))
-                print("goal state:" + str(goal_state))
                 goal_row, goal_col = divmod(flat_goal.index(state[i][j]), len(state))
                 distance += abs(i - goal_row) + abs(j - goal_col)
-                print("Distance:" + str(distance))
     return distance
 def misplaced_tiles(state, goal_state):
     misplaced = 0

@@ -18,9 +18,10 @@ def a_star(H, tile_problem):
     while not frontier.empty():
         current_frontier = frontier.get()
         current = current_frontier[2]
-        actions.append(current_frontier[3])
+        if current_frontier[3] != "Start":
+            actions.append(current_frontier[3])
         if tile_problem.goal_test(current):
-            return current
+            return (current,actions)
         if current not in explored:
             explored.append(current)
             for action in tile_problem.actions(current):
@@ -50,17 +51,17 @@ def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
         for line in lines:
             row = [int(x) if x != '' else None for x in line.strip().split(',')]
             initial_state.append(row)
-    print("Initial State:" + str(initial_state))
 
     tile_problem = TileProblem(initial_state)
-    print(tile_problem.actions(initial_state))
     if int(A) == 1:
-        print("here")
-        output = a_star(H, tile_problem)
-        print("final output:" + str(output))
+        (output_state, actions) = a_star(H, tile_problem)
+        print("final output:" + str(output_state))
+        print("actions:" + str(actions))
+
     # else:
     #     output = rbfs(tile_problem)
-
+    with open(OUTPUT_FILE_PATH, 'w') as f:
+        f.write(','.join(actions))
     #then write the output to the output file here
 
 
