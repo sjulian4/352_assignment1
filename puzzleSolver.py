@@ -3,35 +3,34 @@ from queue import PriorityQueue
 from TileProblem import TileProblem
 from Heuristics import manhattan_distance, misplaced_tiles
 import heapq
+from itertools import count
  
 
 def a_star(H, tile_problem):
     explored = []
+    actions = []
+    counter = count()
     start = tile_problem.initial_state
-    print("Start State:" + str(start))
-    print("Goal State:" + str(tile_problem.goal_state))
 
    # Code from slides
     frontier = PriorityQueue()
-    frontier.put((0,start))
-    print("Frontier:" + str(frontier))
+    frontier.put((0, next(counter),start, "Start"))  
     while not frontier.empty():
-        current = frontier.get()[1]
+        current_frontier = frontier.get()
+        current = current_frontier[2]
+        actions.append(current_frontier[3])
         if tile_problem.goal_test(current):
             return current
         if current not in explored:
             explored.append(current)
             for action in tile_problem.actions(current):
-                print("Action:" + str(action))
                 new_node = tile_problem.result(current,action)
-                print("New Node before heuristic:" + str(new_node))
                 if int(H) == 1:
                     heuristic = manhattan_distance(new_node, tile_problem.goal_state)
                 else:
                     heuristic = misplaced_tiles(new_node, tile_problem.goal_state)
-                print("Heuristic:" + str(heuristic))
-                print("New Node:" + str(new_node))
-                frontier.put((heuristic,new_node))
+                frontier.put((heuristic,next(counter),new_node, action))
+ 
    ###################
 
 
@@ -58,6 +57,7 @@ def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
     if int(A) == 1:
         print("here")
         output = a_star(H, tile_problem)
+        print("final output:" + str(output))
     # else:
     #     output = rbfs(tile_problem)
 
