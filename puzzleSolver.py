@@ -24,6 +24,7 @@ def a_star(H, tile_problem):
             for action in tile_problem.actions(current):
                 print("Action:" + str(action))
                 new_node = tile_problem.result(current,action)
+                print("New Node before heuristic:" + str(new_node))
                 if int(H) == 1:
                     heuristic = manhattan_distance(new_node, tile_problem.goal_state)
                 else:
