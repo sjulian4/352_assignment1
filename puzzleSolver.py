@@ -4,6 +4,7 @@ from TileProblem import TileProblem
 from Heuristics import manhattan_distance, misplaced_tiles
 import heapq
 from itertools import count
+import math
  
 
 def a_star(H, tile_problem):
@@ -36,9 +37,24 @@ def a_star(H, tile_problem):
 
 
 
-# def rbfs(tile_problem):
+def rbfs(H, tile_problem, node, f-limit):
 
-
+function RBFS(problem, node, f-limit)
+returns a solution or failure and a new f-cost limit
+if problem.GOAL-TEST(node.STATE) then return SOLUTION(node)
+successors ← [ ]
+for each action in problem.ACTIONS(node.STATE) do
+    add CHILD-NODE(problem, node, action) into successors
+if successors is empty then return failure, ∞
+for each s in successors do
+    /* update f with value from previous search, if any */
+    s.f ← max (s.g + s.h, node.f))
+loop do
+    best ← the lowest f-value in successors
+    if best.f > f-limit then return failure, best.f
+    alternative ← the second lowest f-value among successors
+    result, best.f ← RBFS (problem, best, min(f-limit,alternative))
+    if result != failure then return result
 
 
 
@@ -55,15 +71,15 @@ def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
     tile_problem = TileProblem(initial_state)
     if int(A) == 1:
         (output_state, actions) = a_star(H, tile_problem)
-        print("final output:" + str(output_state))
-        print("actions:" + str(actions))
 
-    # else:
-    #     output = rbfs(tile_problem)
+    else:
+        (output_state, actions) = rbfs(H, tile_problem, tile_problem.initial_state, math.inf)
+
+
+    print("final output:" + str(output_state))
+    print("actions:" + str(actions))
     with open(OUTPUT_FILE_PATH, 'w') as f:
         f.write(','.join(actions))
-    #then write the output to the output file here
-
 
 if __name__ == '__main__':
     A = sys.argv[1]  # A=1 is A*, A=2 is RBFS
