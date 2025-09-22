@@ -6,6 +6,16 @@ import heapq
 from itertools import count
 import math
  
+class Node:
+    def __init__(self, problem, state, action, parent, g, h, f):
+        self.problem = problem
+        self.state = state
+        self.action = action
+        self.parent = parent
+        self.g = g
+        self.h = h
+        self.f = f
+
 
 def a_star(H, tile_problem):
     explored = []
@@ -37,24 +47,43 @@ def a_star(H, tile_problem):
 
 
 
-def rbfs(H, tile_problem, node, f-limit):
-
-function RBFS(problem, node, f-limit)
-returns a solution or failure and a new f-cost limit
-if problem.GOAL-TEST(node.STATE) then return SOLUTION(node)
-successors ← [ ]
-for each action in problem.ACTIONS(node.STATE) do
-    add CHILD-NODE(problem, node, action) into successors
-if successors is empty then return failure, ∞
-for each s in successors do
-    /* update f with value from previous search, if any */
-    s.f ← max (s.g + s.h, node.f))
-loop do
-    best ← the lowest f-value in successors
-    if best.f > f-limit then return failure, best.f
-    alternative ← the second lowest f-value among successors
-    result, best.f ← RBFS (problem, best, min(f-limit,alternative))
-    if result != failure then return result
+def rbfs(H, tile_problem, node, f_limit, solution):
+    if tile_problem.goal_test(node.state):
+        return (node.state,node.f, solution)
+    successors = []
+    for action in tile_problem.actions(node.state):
+        new_state = tile_problem.result(node.state, action)
+        if node.parent and new_state == node.parent.state:
+            continue
+        if int(H) == 1:
+            heuristic = manhattan_distance(new_state, tile_problem.goal_state)
+        else:
+            heuristic = misplaced_tiles(new_state, tile_problem.goal_state)
+        child_node = Node(
+            problem=tile_problem,
+            state=new_state, 
+            action=action, 
+            parent=node,
+            g=node.g + tile_problem.step_cost(node.state,action,new_state), 
+            h=heuristic, 
+            f=math.inf,
+            )
+        successors.append(child_node)
+    if not successors:
+        return ("failure", math.inf)
+    for s in successors:
+        #  update f with value from previous search, if any 
+        s.f = max (s.g + s.h, node.f)
+    while True:
+        best = min(successors, key=lambda node: node.f)
+        if best.f > f_limit:
+            return ("failure", best.f, solution)
+        alternative = min((s.f for s in successors if s is not best), default=math.inf)
+        new_f = min(f_limit, alternative)
+        actions = solution + [best.action]
+        result, best.f, temp_solution = rbfs(H, tile_problem, best, new_f, actions)
+        if result[0] != "failure":
+            return (result, best.f, temp_solution)
 
 
 
@@ -71,9 +100,21 @@ def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
     tile_problem = TileProblem(initial_state)
     if int(A) == 1:
         (output_state, actions) = a_star(H, tile_problem)
-
     else:
-        (output_state, actions) = rbfs(H, tile_problem, tile_problem.initial_state, math.inf)
+        if int(H) == 1:
+            heuristic = manhattan_distance(tile_problem.initial_state, tile_problem.goal_state)
+        else:
+            heuristic = misplaced_tiles(tile_problem.initial_state, tile_problem.goal_state)
+        start_node = Node(
+            problem=tile_problem, 
+            state=tile_problem.initial_state, 
+            action="start",
+            parent=None,
+            g=0, 
+            h=heuristic, 
+            f=heuristic,
+            )
+        (output_state, f, actions) = rbfs(H, tile_problem, start_node, math.inf,[])
 
 
     print("final output:" + str(output_state))
