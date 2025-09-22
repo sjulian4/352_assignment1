@@ -32,8 +32,9 @@ def a_star(H, tile_problem, start_node):
                 current_frontier = current_frontier.parent
             actions.reverse()
             return (current,actions)
-        if current_frontier not in explored:
-            explored.add(current_frontier)
+        tuple_current = tuple(tuple(row) for row in current)
+        if tuple_current not in explored:
+            explored.add(tuple_current)
             for action in tile_problem.actions(current):
                 if int(H) == 1:
                     heuristic = manhattan_distance(tile_problem.result(current,action), tile_problem.goal_state)
@@ -48,9 +49,8 @@ def a_star(H, tile_problem, start_node):
                     h=heuristic,
                     f=current_frontier.g + tile_problem.step_cost(current_frontier.state,action,tile_problem.result(current,action)) + heuristic,
                 )
-
- 
                 frontier.put((new_node.f,next(counter),new_node))
+    return ("failure", [])
 
 
 
@@ -94,7 +94,6 @@ def rbfs(H, tile_problem, node, f_limit, solution):
 
 
 def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
-    #Get the initial state from the input file
     with open(INPUT_FILE_PATH, 'r') as f:
         lines = f.readlines()
         initial_state = []
