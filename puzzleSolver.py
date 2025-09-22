@@ -17,7 +17,8 @@ class Node:
         self.f = f
 
 
-def a_star(H, tile_problem):
+#todo: Fix this so it uses f, g, h correctly
+def a_star(H, tile_problem, node):
     explored = []
     actions = []
     counter = count()
@@ -69,8 +70,6 @@ def rbfs(H, tile_problem, node, f_limit, solution):
             f=math.inf,
             )
         successors.append(child_node)
-    if not successors:
-        return ("failure", math.inf)
     for s in successors:
         #  update f with value from previous search, if any 
         s.f = max (s.g + s.h, node.f)
@@ -98,22 +97,22 @@ def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
             initial_state.append(row)
 
     tile_problem = TileProblem(initial_state)
-    if int(A) == 1:
-        (output_state, actions) = a_star(H, tile_problem)
+    if int(H) == 1:
+        heuristic = manhattan_distance(tile_problem.initial_state, tile_problem.goal_state)
     else:
-        if int(H) == 1:
-            heuristic = manhattan_distance(tile_problem.initial_state, tile_problem.goal_state)
-        else:
-            heuristic = misplaced_tiles(tile_problem.initial_state, tile_problem.goal_state)
-        start_node = Node(
-            problem=tile_problem, 
-            state=tile_problem.initial_state, 
-            action="start",
-            parent=None,
-            g=0, 
-            h=heuristic, 
-            f=heuristic,
-            )
+        heuristic = misplaced_tiles(tile_problem.initial_state, tile_problem.goal_state)
+    start_node = Node(
+        problem=tile_problem, 
+        state=tile_problem.initial_state, 
+        action="start",
+        parent=None,
+        g=0, 
+        h=heuristic, 
+        f=heuristic,
+        )
+    if int(A) == 1:
+        (output_state, actions) = a_star(H, tile_problem, start_node)
+    else:
         (output_state, f, actions) = rbfs(H, tile_problem, start_node, math.inf,[])
 
 
