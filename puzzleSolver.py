@@ -87,7 +87,7 @@ def rbfs(H, tile_problem, node, f_limit, solution):
         new_f = min(f_limit, alternative)
         actions = solution + [best.action]
         result, best.f, temp_solution = rbfs(H, tile_problem, best, new_f, actions)
-        if result[0] != "failure":
+        if result != "failure":
             return (result, best.f, temp_solution)
 
 
