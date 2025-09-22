@@ -2,9 +2,8 @@ import sys
 from queue import PriorityQueue
 from TileProblem import TileProblem
 from Heuristics import manhattan_distance, misplaced_tiles
-import heapq
-from itertools import count
 import math
+from itertools import count
  
 class Node:
     def __init__(self, problem, state, action, parent, g, h, f):
@@ -17,34 +16,41 @@ class Node:
         self.f = f
 
 
-#todo: Fix this so it uses f, g, h correctly
-def a_star(H, tile_problem, node):
-    explored = []
-    actions = []
+def a_star(H, tile_problem, start_node):
+    explored = set()
     counter = count()
-    start = tile_problem.initial_state
-
-   # Code from slides
+    
     frontier = PriorityQueue()
-    frontier.put((0, next(counter),start, "Start"))  
+    frontier.put((start_node.f,next(counter),start_node))  
     while not frontier.empty():
-        current_frontier = frontier.get()
-        current = current_frontier[2]
-        if current_frontier[3] != "Start":
-            actions.append(current_frontier[3])
+        current_frontier = frontier.get()[2]
+        current = current_frontier.state
         if tile_problem.goal_test(current):
+            actions = []
+            while current_frontier.parent is not None:
+                actions.append(current_frontier.action)
+                current_frontier = current_frontier.parent
+            actions.reverse()
             return (current,actions)
-        if current not in explored:
-            explored.append(current)
+        if current_frontier not in explored:
+            explored.add(current_frontier)
             for action in tile_problem.actions(current):
-                new_node = tile_problem.result(current,action)
                 if int(H) == 1:
-                    heuristic = manhattan_distance(new_node, tile_problem.goal_state)
+                    heuristic = manhattan_distance(tile_problem.result(current,action), tile_problem.goal_state)
                 else:
-                    heuristic = misplaced_tiles(new_node, tile_problem.goal_state)
-                frontier.put((heuristic,next(counter),new_node, action))
+                    heuristic = misplaced_tiles(tile_problem.result(current,action), tile_problem.goal_state)
+                new_node = Node(
+                    problem=tile_problem,
+                    state=tile_problem.result(current,action),
+                    action=action,
+                    parent=current_frontier,
+                    g=current_frontier.g + tile_problem.step_cost(current_frontier.state,action,tile_problem.result(current,action)),
+                    h=heuristic,
+                    f=current_frontier.g + tile_problem.step_cost(current_frontier.state,action,tile_problem.result(current,action)) + heuristic,
+                )
+
  
-   ###################
+                frontier.put((new_node.f,next(counter),new_node))
 
 
 
