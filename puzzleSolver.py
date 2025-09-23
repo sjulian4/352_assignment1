@@ -4,7 +4,9 @@ from TileProblem import TileProblem
 from Heuristics import manhattan_distance, misplaced_tiles
 import math
 from itertools import count
- 
+# import time
+# explored_states_counter = 0
+# time.perf_counter()
 class Node:
     def __init__(self, problem, state, action, parent, g, h, f):
         self.problem = problem
@@ -19,7 +21,6 @@ class Node:
 def a_star(H, tile_problem, start_node):
     explored = set()
     counter = count()
-    
     frontier = PriorityQueue()
     frontier.put((start_node.f,next(counter),start_node))  
     while not frontier.empty():
@@ -31,10 +32,13 @@ def a_star(H, tile_problem, start_node):
                 actions.append(current_frontier.action)
                 current_frontier = current_frontier.parent
             actions.reverse()
+            # print("states explored:" + str(len(explored)))
+            # print("Memory: " + str(sys.getsizeof(explored)))
             return (current,actions)
         tuple_current = tuple(tuple(row) for row in current)
         if tuple_current not in explored:
             explored.add(tuple_current)
+
             for action in tile_problem.actions(current):
                 if int(H) == 1:
                     heuristic = manhattan_distance(tile_problem.result(current,action), tile_problem.goal_state)
@@ -55,7 +59,10 @@ def a_star(H, tile_problem, start_node):
 
 
 def rbfs(H, tile_problem, node, f_limit, solution):
+    # global explored_states_counter
+    # explored_states_counter +=1
     if tile_problem.goal_test(node.state):
+        # print("Memory: " + str(sys.getsizeof(solution)))
         return (node.state,node.f, solution)
     successors = []
     for action in tile_problem.actions(node.state):
@@ -116,13 +123,19 @@ def main(A,N,H,INPUT_FILE_PATH,OUTPUT_FILE_PATH):
         f=heuristic,
         )
     if int(A) == 1:
+        # start_time = time.perf_counter()
         (output_state, actions) = a_star(H, tile_problem, start_node)
+        # end_time = time.perf_counter()
     else:
+        # start_time = time.perf_counter()
         (output_state, f, actions) = rbfs(H, tile_problem, start_node, math.inf,[])
+        # end_time = time.perf_counter()
+    # print("Time taken (in milliseconds): " + str((end_time - start_time) * 1000))
 
 
-    print("final output:" + str(output_state))
-    print("actions:" + str(actions))
+    # print("final output:" + str(output_state))
+    # print("actions:" + str(actions))
+    # print("number of states explored:" + str(explored_states_counter))
     with open(OUTPUT_FILE_PATH, 'w') as f:
         f.write(','.join(actions))
 
